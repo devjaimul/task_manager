@@ -1,7 +1,12 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+
 import 'package:lottie/lottie.dart';
+import 'package:task_manager/ui/screens/sign_in_screen.dart';
+import 'package:task_manager/ui/utility/app_colors.dart';
 import 'package:task_manager/ui/utility/assets_path.dart';
+
+import 'package:task_manager/ui/widgets/backgorund_widget.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -12,20 +17,48 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _moveToNextScreen();
+  }
+
+  Future<void> _moveToNextScreen() async {
+    if (mounted) {
+      await Future.delayed(Duration(seconds: 5));
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SignInScreen(),
+          ));
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final sizeH=MediaQuery.sizeOf(context).height;
     return Scaffold(
-      body: Stack(
-        children: [
-          SvgPicture.asset(
-            AssetsPath.backGroundSvg,
-            height: double.maxFinite,
-            width: double.maxFinite,
-            fit: BoxFit.cover,
-          ),
-          Center(child: Lottie.asset(AssetsPath.logoJson,height: 200)),
-          
-        ],
-      ),
+      body: BackGroundWidget(
+          child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Lottie.asset(AssetsPath.logoJson, height: sizeH*.2),
+            DefaultTextStyle(
+              style: const TextStyle(
+                  fontSize: 20,
+                  color: AppColors.themeColor,
+                  fontWeight: FontWeight.bold),
+              child: AnimatedTextKit(
+                animatedTexts: [
+                  WavyAnimatedText('Task Manager'),
+                ],
+                isRepeatingAnimation: true,
+              ),
+            ),
+          ],
+        ),
+      )),
     );
   }
 }
