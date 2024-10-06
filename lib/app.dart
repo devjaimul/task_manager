@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/splash_screen.dart';
+import 'package:task_manager/ui/screens/auth/splash_screen.dart';
 import 'package:task_manager/ui/utility/app_colors.dart';
 
 class TaskManager extends StatelessWidget {
@@ -17,6 +17,7 @@ class TaskManager extends StatelessWidget {
   ThemeData lightThemeData() {
     return ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: AppColors.themeColor),
+        appBarTheme: AppBarTheme(backgroundColor: AppColors.themeColor),
         inputDecorationTheme:  InputDecorationTheme(
           fillColor: Colors.white,
           filled: true,
