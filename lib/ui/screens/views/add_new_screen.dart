@@ -16,7 +16,7 @@ class _AddNewScreenState extends State<AddNewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ProfileAppBar(),
+      appBar: ProfileAppBar(context),
       body: BackGroundWidget(
           child: SingleChildScrollView(
             child: Padding(
