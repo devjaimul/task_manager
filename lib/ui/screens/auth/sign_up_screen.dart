@@ -188,8 +188,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       "mobile": _mobileTEController.text.trim(),
       "password": _passTEController.text
     };
-    NetworkResponse networkResponse =
-        await NetWorkCaller.postRequest(Urls.registration, body: requestInput);
+    NetworkResponse networkResponse=await NetworkCaller.postRequest(url:Urls.registration,body: requestInput);
     registrationInProgress = false;
     if (mounted) {
       setState(() {});
@@ -198,11 +197,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (networkResponse.isSuccess) {
       _clearText();
       if (mounted) {
-        showSnackBar('Registration Complete', context);
+        showSnackBar(context, 'Registration Complete', );
+
       }
     } else {
       if (mounted) {
-        showSnackBar(networkResponse.errorMessage ?? ' Registration Failed', context);
+        showSnackBar(context, networkResponse.errorMessage.toString(), true);
       }
     }
   }

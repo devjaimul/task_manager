@@ -1,48 +1,83 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:task_manager/data/models/network_response.dart';
 
-class NetWorkCaller {
- static Future<NetworkResponse> getRequest(String url) async {
+class NetworkCaller {
+  static Future<NetworkResponse> getRequest({required String url}) async {
     try {
-      Response response = await get(Uri.parse(url));
+      Uri uri = Uri.parse(url);
+      debugPrint(url);
+      final Response response = await get(uri);
+      printResponse(url, response);
       if (response.statusCode == 200) {
-        final decodedData = jsonDecode(response.body);
+        final decodeData = jsonDecode(response.body);
         return NetworkResponse(
-            statusCode: response.statusCode,
-            isSuccess: true,
-            responseData: decodedData);
+          isSuccess: true,
+          statusCode: response.statusCode,
+          responseData: decodeData,
+        );
       } else {
         return NetworkResponse(
-            statusCode: response.statusCode, isSuccess: false);
+          isSuccess: false,
+          statusCode: response.statusCode,
+        );
       }
     } catch (e) {
       return NetworkResponse(
-          statusCode: -1, isSuccess: false, errorMessage: e.toString());
+        isSuccess: false,
+        statusCode: -1,
+        errorMessage: e.toString(),
+      );
     }
   }
 
-  static Future<NetworkResponse> postRequest(String url, {Map<String, dynamic>? body}) async {
+  static Future<NetworkResponse> postRequest(
+      {required String url, Map<String, dynamic>? body}) async {
     try {
-      Response response = await post(
-        Uri.parse(url),
-        headers: {'Content-type': 'Application/json'},
+      Uri uri = Uri.parse(url);
+      debugPrint(url);
+      final Response response = await post(
+        uri,
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode(body),
       );
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final decodedData = jsonDecode(response.body);
-        return NetworkResponse(
+      printResponse(url, response);
+      if (response.statusCode == 200) {
+        final decodeData = jsonDecode(response.body);
+
+        if (decodeData['status'] == 'fail') {
+          return NetworkResponse(
+            isSuccess: false,
             statusCode: response.statusCode,
-            isSuccess: true,
-            responseData: decodedData);
+            errorMessage: decodeData['data'],
+          );
+        }
+
+        return NetworkResponse(
+          isSuccess: true,
+          statusCode: response.statusCode,
+          responseData: decodeData,
+        );
       } else {
         return NetworkResponse(
-            statusCode: response.statusCode, isSuccess: false);
+          isSuccess: false,
+          statusCode: response.statusCode,
+        );
       }
     } catch (e) {
       return NetworkResponse(
-          statusCode: -1, isSuccess: false, errorMessage: e.toString());
+        isSuccess: false,
+        statusCode: -1,
+        errorMessage: e.toString(),
+      );
     }
+  }
+
+  static void printResponse(String url, Response response) {
+    debugPrint(
+      'URL: $url\nRESPONSE CODE: ${response.statusCode}\nBODY: ${response.body}',
+    );
   }
 }
