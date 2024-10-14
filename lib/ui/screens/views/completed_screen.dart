@@ -39,6 +39,9 @@ class _CompletedScreenState extends State<CompletedScreen> {
             itemBuilder: (context, index) {
               final data=completedTaskList[index];
               return TaskItem(
+                onUpdate: (){
+                  _getCompletedTask();
+                },
                 title: data.title,
                 description: data.description,
                 status: data.status,

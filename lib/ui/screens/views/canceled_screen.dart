@@ -11,7 +11,7 @@ class CanceledScreen extends StatelessWidget {
       body: ListView.builder(
         itemCount: 5,
         itemBuilder: (context, index) {
-          return TaskItem();
+          //return TaskItem();
         },
       ),
     );

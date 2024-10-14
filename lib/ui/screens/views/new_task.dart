@@ -31,6 +31,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
     _getCountStatus();
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
@@ -44,16 +45,21 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
               },
               child: Visibility(
                 visible: getListIsProgress == false,
-                replacement: Center(child: CircularProgressIndicator()),
+                replacement: const Center(child: CircularProgressIndicator()),
                 child: ListView.builder(
                   itemCount: newTaskList.length,
                   itemBuilder: (context, index) {
                     final data = newTaskList[index];
                     return TaskItem(
+                      onUpdate: (){
+                        _getCountStatus();
+                        _getNewTask();
+                      },
+                      id: data.sId,
                         title: data.title,
-                        description: data.description.toString(),
-                        time: data.createdDate.toString(),
-                        status: data.status.toString());
+                        description: data.description,
+                        time: data.createdDate,
+                        status: data.status);
                   },
                 ),
               ),
@@ -125,7 +131,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   Widget _buildSummeryScetion() {
     return Visibility(
       visible: getStatusCountIsProgress == false,
-      replacement: SizedBox(
+      replacement: const SizedBox(
         height: 100,
         child: Center(child: CircularProgressIndicator()),
       ),
@@ -152,4 +158,4 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
         ));
   }
 }
-//37 min task manager iii video 2 iv
+//45 min task manager iii video 2 iv
