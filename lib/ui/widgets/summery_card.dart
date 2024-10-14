@@ -18,8 +18,8 @@ class SummeryCard extends StatelessWidget {
         child: Column(
           children: [
 
-            HeadingThree(data: title,fontSize: 22,),
-            HeadingThree(data: subTitle,color: Colors.black.withOpacity(.6),),
+            HeadingThree(data: subTitle,fontSize: 22,),
+            HeadingThree(data: title,color: Colors.black.withOpacity(.6),),
           ],
         ),
       ),

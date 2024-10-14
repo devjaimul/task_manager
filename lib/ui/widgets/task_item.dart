@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../utility/text_style.dart';
 
 class TaskItem extends StatelessWidget {
+  final String? title;
+  final String? description;
+  final String? time;
+  final String? status;
   const TaskItem({
-    super.key,
+    super.key,  this.title,  this.description,  this.time,  this.status,
   });
 
   @override
@@ -14,28 +19,34 @@ class TaskItem extends StatelessWidget {
       child: Card(
         color: Colors.white,
         child: ListTile(
-          title: HeadingThree(data: 'Title will be here'),
+          title: HeadingThree(data: title!),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              HeadingThree(data: 'Descriptopn',color: Colors.black.withOpacity(0.6),fontSize: 15,),
-              HeadingThree(data: 'Date : 12/12/24',color: Colors.black.withOpacity(0.8),fontSize: 17,),
+              HeadingThree(data: description!,color: Colors.black.withOpacity(0.6),fontSize: 15,),
+              HeadingThree(
+                data: (time != null)
+                    ? DateFormat('d MMMM, h:mm a').format(DateTime.parse(time!))
+                    : '',
+                color: Colors.black.withOpacity(0.8),
+                fontSize: 17,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Chip(label: Text('New'),
+                  Chip(label: Text(status!),
 
                     backgroundColor: Colors.blue,
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16),
                       side: BorderSide.none,
 
                     ),
                   ),
-                  ButtonBar(
+                  OverflowBar(
                     children: [
-                      IconButton(onPressed: (){}, icon: Icon(Icons.edit)),
-                      IconButton(onPressed: (){}, icon: Icon(Icons.delete,color: Colors.red,)),
+                      IconButton(onPressed: (){}, icon: const Icon(Icons.edit)),
+                      IconButton(onPressed: (){}, icon: const Icon(Icons.delete,color: Colors.red,)),
                     ],
                   )
                 ],

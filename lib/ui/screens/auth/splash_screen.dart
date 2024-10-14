@@ -2,7 +2,9 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 
 import 'package:lottie/lottie.dart';
+import 'package:task_manager/data/controller/auth_controller.dart';
 import 'package:task_manager/ui/screens/auth/sign_in_screen.dart';
+import 'package:task_manager/ui/screens/navBar/cutom_navBar.dart';
 import 'package:task_manager/ui/utility/app_colors.dart';
 import 'package:task_manager/ui/utility/assets_path.dart';
 
@@ -25,9 +27,10 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _moveToNextScreen() async {
     if (mounted) {
-      await Future.delayed(const Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 1));
+      bool isUserLogin=await AuthController.checkAuthState();
       Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => const SignInScreen(),
+            builder: (context) => isUserLogin?CustomNavbar(): SignInScreen(),
           ));
     }
   }

@@ -30,7 +30,7 @@ NewTaskScreen(),
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ProfileAppBar(context),
+      appBar: profileAppBar(context),
       body: screen[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: AppColors.themeColor,

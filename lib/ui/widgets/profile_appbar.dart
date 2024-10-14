@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/controller/auth_controller.dart';
+import 'package:task_manager/ui/screens/auth/sign_in_screen.dart';
 import 'package:task_manager/ui/screens/views/profile_screen.dart';
 
 import '../utility/text_style.dart';
 
-AppBar ProfileAppBar(context ,[bool isProfile=false]) {
-  void _OnTapProfile(){
+AppBar profileAppBar(context ,[bool isProfile=false]) {
+  void onTapProfile(){
     if(isProfile){
       return;
     }
@@ -13,25 +15,29 @@ AppBar ProfileAppBar(context ,[bool isProfile=false]) {
   return AppBar(
     title: GestureDetector(
       onTap: (){
-     _OnTapProfile();
+     onTapProfile();
       },
-      child: const Column(
+      child:  Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          HeadingThree(data: 'Kakashi Hatake',color: Colors.white,),
-          HeadingThree(data: 'kakashiHatake@gmail.com',color: Colors.white,),
+          HeadingThree(data: AuthController.userData?.fullName ??'',color: Colors.white,),
+          HeadingThree(data: AuthController.userData?.email ??'',color: Colors.white,),
         ],
       ),
     ),
     leading: GestureDetector(
-      onTap: ()=>_OnTapProfile(),
+      onTap: ()=>onTapProfile(),
       child: const Padding(
         padding: EdgeInsets.all(5),
         child: CircleAvatar(),
       ),
     ),
     actions: [
-      IconButton(onPressed: (){}, icon: const Icon(Icons.login_outlined,color: Colors.white,))
+      IconButton(onPressed: () async{
+
+        await AuthController.clearAllData();
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const SignInScreen(),), (route) => false,);
+      }, icon: const Icon(Icons.login_outlined,color: Colors.white,))
     ],
 
 

@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:task_manager/data/controller/auth_controller.dart';
+import 'package:task_manager/data/models/login_model.dart';
 import 'package:task_manager/data/models/network_response.dart';
 import 'package:task_manager/data/network%20caller/network_caller.dart';
 import 'package:task_manager/ui/screens/auth/email_verification_screen.dart';
@@ -23,11 +24,10 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passTEController = TextEditingController();
-  final GlobalKey<FormState> _formKey=GlobalKey<FormState>();
-   bool signInProgress=false;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool signInProgress = false;
   @override
   Widget build(BuildContext context) {
     final sizeH = MediaQuery.sizeOf(context).height;
@@ -37,7 +37,7 @@ class _SignInScreenState extends State<SignInScreen> {
         child: BackGroundWidget(
             child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(24.0),
+            padding: const EdgeInsets.all(24.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -45,7 +45,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   SizedBox(
                     height: sizeH * .25,
                   ),
-                  HeadingTwo(data: 'Get Started With'),
+                  const HeadingTwo(data: 'Get Started With'),
                   SizedBox(
                     height: sizeH * .03,
                   ),
@@ -53,7 +53,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     controller: _emailTEController,
                     keyboardType: TextInputType.emailAddress,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: InputDecoration(hintText: 'Email'),
+                    decoration: const InputDecoration(hintText: 'Email'),
                     validator: (String? value) {
                       if (value?.trim().isEmpty ?? true) {
                         return "Enter Your Email";
@@ -68,10 +68,11 @@ class _SignInScreenState extends State<SignInScreen> {
                     height: sizeH * .010,
                   ),
                   TextFormField(
+                    obscureText: true,
                     controller: _passTEController,
                     keyboardType: TextInputType.number,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: InputDecoration(hintText: 'Password'),
+                    decoration: const InputDecoration(hintText: 'Password'),
                     validator: (String? value) {
                       if (value?.trim().isEmpty ?? true) {
                         return "Enter Your Password";
@@ -84,30 +85,38 @@ class _SignInScreenState extends State<SignInScreen> {
                     height: sizeH * .018,
                   ),
                   Visibility(
-                    visible: signInProgress==false,
-                    replacement: Center(child: CircularProgressIndicator()),
+                    visible: signInProgress == false,
+                    replacement:
+                        const Center(child: CircularProgressIndicator()),
                     child: ElevatedButton(
-                        onPressed:_OnTapNavBarButton,
-                        child: Icon(Icons.arrow_circle_right_outlined)),
+                        onPressed: _onTapNavBarButton,
+                        child: const Icon(Icons.arrow_circle_right_outlined)),
                   ),
                   SizedBox(
                     height: sizeH * .018,
                   ),
-                  TextButton(onPressed: _onTapForgetPassButton, child: HeadingThree(data: 'Forgot Password?',color: Colors.black.withOpacity(0.5),)),
-                  RichText(text: TextSpan(
-                    text: "Don't have an account?",
-                    style: TextStyle(color: Colors.black,fontSize: sizeH*0.018,letterSpacing: .4),
-                    children: [
-                      TextSpan(
-                        text: ' Sing Up',
-                        style: TextStyle(color: AppColors.themeColor),
-                        recognizer: TapGestureRecognizer()..onTap= (){
-
-                          _OnTapSignUpButton();
-                        }
-                      )
-                    ]
-                  ))
+                  TextButton(
+                      onPressed: _onTapForgetPassButton,
+                      child: HeadingThree(
+                        data: 'Forgot Password?',
+                        color: Colors.black.withOpacity(0.5),
+                      )),
+                  RichText(
+                      text: TextSpan(
+                          text: "Don't have an account?",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: sizeH * 0.018,
+                              letterSpacing: .4),
+                          children: [
+                        TextSpan(
+                            text: ' Sing Up',
+                            style: const TextStyle(color: AppColors.themeColor),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                _onTapSignUpButton();
+                              })
+                      ]))
                 ],
               ),
             ),
@@ -115,52 +124,81 @@ class _SignInScreenState extends State<SignInScreen> {
         )),
       ),
     );
-
   }
 
-  Future<void> signUp()async{
-    signInProgress=true;
-    if(mounted){
-      setState(() {
+//sign in api
+  Future<void> signIn() async {
 
-      });
-    }
-    Map<String,dynamic> requestInput={
-      "email":_emailTEController.text.trim(),
-      "password":_passTEController.text
+   if(mounted){
+     setState(() {
+       signInProgress = true;
+     });
+   }
+
+    Map<String, dynamic> requestInput = {
+      "email": _emailTEController.text.trim(),
+      "password": _passTEController.text
     };
-    NetworkResponse networkResponse=await NetWorkCaller.postRequest(Urls.login,body: requestInput);
-    signInProgress=false;
-    if(mounted){
-      setState(() {
 
-      });
-    }
-    print(networkResponse.statusCode);
-    if(networkResponse.isSuccess){
-     // await AuthController.saveAccessToken(response.responseData['token']);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CustomNavbar(),));
-    }
-    else{
+    // API call
+    NetworkResponse response =
+        await NetWorkCaller.postRequest(Urls.login, body: requestInput);
 
-     showSnackBar(networkResponse.errorMessage??'Error', context);
+   if(mounted){
+     setState(() {
+       signInProgress = false;
+     });
+   }
+
+    if (response.isSuccess) {
+      // Parse login model from the response
+      LoginModel loginModel = LoginModel.fromJson(response.responseData);
+
+      // Save the token and user data
+      await AuthController.saveUserAccessToken(loginModel.token!);
+      await AuthController.saveUserData(
+          loginModel.users![0]); // Access the first user in the list
+
+      // Navigate to the next screen after successful login
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const CustomNavbar(),
+          ),
+        );
+      }
+    } else {
+      if (mounted) {
+        // Show error message if sign-in fails
+        showSnackBar(response.errorMessage ?? 'Error during login', context);
+      }
     }
   }
 
-  void _OnTapSignUpButton(){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpScreen(),));
-  }
-  void _OnTapNavBarButton(){
+// Navigate to bottom navigation bar after form validation
+  void _onTapNavBarButton() {
     if (_formKey.currentState!.validate()) {
-      signUp();
-
+      signIn();
     }
-
   }
 
-  void _onTapForgetPassButton(){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => EmailVerificationScreen(),));
+  void _onTapSignUpButton() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const SignUpScreen(),
+        ));
   }
+
+  void _onTapForgetPassButton() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const EmailVerificationScreen(),
+        ));
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose

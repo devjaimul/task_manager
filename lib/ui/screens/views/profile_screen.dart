@@ -21,7 +21,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: ProfileAppBar(context,true),
+      appBar: profileAppBar(context,true),
       body: BackGroundWidget(child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 10),
