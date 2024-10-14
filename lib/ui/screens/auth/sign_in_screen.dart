@@ -136,7 +136,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
       });
     }
+    print(networkResponse.statusCode);
     if(networkResponse.isSuccess){
+     // await AuthController.saveAccessToken(response.responseData['token']);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CustomNavbar(),));
     }
     else{
