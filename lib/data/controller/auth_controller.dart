@@ -40,7 +40,7 @@ class AuthController {
     SharedPreferences sharedPreferences=await SharedPreferences.getInstance();
     await sharedPreferences.clear();
   }
-
+//jdi akbr login  kore taile r login screen dekhabe na
   static Future<bool> checkAuthState()async{
     String? token=await getUserAccessToken();
     if(token==null) return false;
