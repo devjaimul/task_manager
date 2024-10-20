@@ -29,7 +29,9 @@ AppBar profileAppBar(context ,[bool isProfile=false]) {
       onTap: ()=>onTapProfile(),
       child: const Padding(
         padding: EdgeInsets.all(5),
-        child: CircleAvatar(),
+        child: CircleAvatar(
+        //  child: Image.memory(base64Decoded(AuthController.userData.photo??'')),
+        ),
       ),
     ),
     actions: [

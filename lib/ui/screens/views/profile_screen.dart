@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_manager/data/controller/auth_controller.dart';
 import 'package:task_manager/data/models/network_response.dart';
+import 'package:task_manager/data/models/user_model.dart';
 import 'package:task_manager/data/network%20caller/network_caller.dart';
 import 'package:task_manager/ui/utility/text_style.dart';
 import 'package:task_manager/ui/utility/urls.dart';
@@ -99,7 +100,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 SizedBox(height: 10,),
-                ElevatedButton(onPressed: (){}, child: Icon(Icons.arrow_circle_right_outlined)),
+                Visibility(
+
+                    visible:updateProfileInProgress==false,
+                    replacement: Center(child: CircularProgressIndicator()),
+                    child: ElevatedButton(onPressed: updateProfile, child: Icon(Icons.arrow_circle_right_outlined))),
                 SizedBox(height: 20,),
               ],
             ),
@@ -108,8 +113,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       )),
     );
   }
+
+  //jdi photo thake
 Future<void> updateProfile()async{
     updateProfileInProgress=true;
+   //String encodedPhoto=AuthController.userData.photo;
     if(mounted){
       setState(() {
 
@@ -124,14 +132,30 @@ Future<void> updateProfile()async{
     if(_passwordTEController.text.isNotEmpty){
       requestBody['password']=_passwordTEController.text;
     }
-    if(selectedImage!=null){
-      File file=File(selectedImage!.path);
-      requestBody['photo']=base64Encode(file.readAsBytesSync());
+    // if(selectedImage!=null){
+    //   File file=File(selectedImage!.path);
+    //   encodedPhoto=base64Encode(file.readAsBytesSync());
+    //   requestBody['photo']=encodedPhoto;
+    // }
+    final NetworkResponse response=await NetWorkCaller.postRequest(Urls.profileUpdate,body: requestBody);
+    if(mounted){
+      setState(() {
+        updateProfileInProgress=false;
+      });
     }
-    final NetworkResponse response=await NetWorkCaller.postRequest(Urls.profileUpdate);
-    
-    if(response.isSuccess){
-      
+    if(response.isSuccess && response.responseData['status']=='success'){
+      UserModel userModel=UserModel(
+        email: _emailTEController.text,
+        firstName: _firstNameTEController.text.trim(),
+        lastName: _lastNameTEController.text.trim(),
+        mobile: _mobileTEController.text.trim(),
+      password: _passwordTEController.text,
+      //  photo:encodedPhoto,
+      );
+      await AuthController.saveUserData(userModel);
+      if(mounted){
+        showSnackBar('Profile Update!', context);
+      }
     }else{
      if(mounted){
        showSnackBar(response.errorMessage??'Profile Update Failed!', context);

@@ -128,12 +128,11 @@ class _SignInScreenState extends State<SignInScreen> {
 
 //sign in api
   Future<void> signIn() async {
-
-   if(mounted){
-     setState(() {
-       signInProgress = true;
-     });
-   }
+    if (mounted) {
+      setState(() {
+        signInProgress = true;
+      });
+    }
 
     Map<String, dynamic> requestInput = {
       "email": _emailTEController.text.trim(),
@@ -144,11 +143,11 @@ class _SignInScreenState extends State<SignInScreen> {
     NetworkResponse response =
         await NetWorkCaller.postRequest(Urls.login, body: requestInput);
 
-   if(mounted){
-     setState(() {
-       signInProgress = false;
-     });
-   }
+    if (mounted) {
+      setState(() {
+        signInProgress = false;
+      });
+    }
 
     if (response.isSuccess) {
       // Parse login model from the response
